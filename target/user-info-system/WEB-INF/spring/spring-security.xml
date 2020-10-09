@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<!-- If you don't want security to apply certain pages; do this because down in security:intercept-url pattern="/**" security on all -->
+		<security:http security="none" pattern="/resources/**" /> 
+		<security:http security="none" pattern="/logout" /> 
+
+<!-- this is for login form we';re using custom but u can u basic as well -->
+ <!-- /gives a spring security's basic login page -->
+			<!-- <security:http-basic/> -->
+
+	 <security:http use-expressions="true" auto-config="true"> 
+			<security:intercept-url pattern="/login" access="permitAll" />
+			<!-- <security:intercept-url pattern="/logout" access="permitAll" /> -->
+			<security:intercept-url pattern="/accessdenied" access="permitAll" />
+			<security:intercept-url pattern="/forgot_password" access="permitAll" />
+			<security:logout logout-success-url="/logout" delete-cookies="JSESSIONID" invalidate-session="true" />
+			<security:intercept-url pattern="/**" access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" /> 
+			<security:form-login login-page="/login" 
+					default-target-url="/home" 
+					always-use-default-target="true" authentication-failure-url="/accessdenied"/>
+			<security:csrf disabled="true" />
+		</security:http>
+	
+	<!-- this is for login credentials in form -->	
+		<security:authentication-manager>
+				<security:authentication-provider
+						 user-service-ref="CustomUserDetailService"> 
+				</security:authentication-provider>
+		</security:authentication-manager>
+		
+		<!-- this is for login credentials in forms we dnt have db yet so hard coded -->
+					<!-- <security:user-service>
+						<security:user name= "admin" authorities ="ROLE_ADMIN" password="admin"/>
+					</security:user-service> -->
+					
+					
+				
+
+</beans>
